@@ -86,7 +86,7 @@ Don't forget to place the link of where to buy each component inside the quotati
 
 ![Headstone Image](IMG_1948.jpg)
 
-For my starter project, I built an arcade console that required hands-on assembly. The process involved soldering electronic components, carefully screwing parts together, and following a detailed instruction manual. This project helped me develop basic technical skills and gave me a deeper understanding of how electronic devices are put together. 
+For my starter project, I built a mini arcade console, which involved soldering circuit components, screwing the case together, and carefully following a step-by-step instruction manual. The kit included a screen, circuit board, buttons, joystick, wires, and a power module. To stay safe, I wore safety glasses while soldering and made sure to work in a well-ventilated area. One of the challenges I faced was making sure all the solder joints were secure without creating shorts, especially in tight spaces on the board. Another tricky part was connecting the screen and fitting all the wires neatly into the case. Through this project, I learned how to read technical diagrams, use a soldering iron properly, and troubleshoot basic electronic issues. It was a fun and educational experience that gave me confidence working with hardware.
 
 # Other Resources/Examples
 One of the best parts about Github is that you can view how other people set up their own work. Here are some past BSE portfolios that are awesome examples. You can view how they set up their portfolio, and you can view their index.md files to understand how they implemented different portfolio components.
