@@ -13,7 +13,7 @@ You should comment out all portions of your portfolio that you have not complete
 
 **Replace the BlueStamp logo below with an image of yourself and your completed project. Follow the guide [here](https://tomcam.github.io/least-github-pages/adding-images-github-pages-site.html) if you need help.**
 
-![Headstone Image](IMG_1948.jpg)
+
   
 # Final Milestone
 
@@ -84,7 +84,7 @@ Don't forget to place the link of where to buy each component inside the quotati
 
 # Starter Project
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/y3VAmNlER5Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+![Headstone Image](IMG_1948.jpg)
 
 For my starter project, I built an arcade console that required hands-on assembly. The process involved soldering electronic components, carefully screwing parts together, and following a detailed instruction manual. This project helped me develop basic technical skills and gave me a deeper understanding of how electronic devices are put together. 
 
