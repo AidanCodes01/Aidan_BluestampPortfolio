@@ -1,4 +1,4 @@
-# Project Name Here
+# Ball Tracking Robot
 Replace this text with a brief description (2-3 sentences) of your project. This description should draw the reader in and make them interested in what you've built. You can include what the biggest challenges, takeaways, and triumphs from completing the project were. As you complete your portfolio, remember your audience is less familiar than you are with all that your project entails!
 
 You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
@@ -85,6 +85,9 @@ Don't forget to place the link of where to buy each component inside the quotati
 # Starter Project
 
 <img src="IMG_1948.jpg" alt="Headstone Image" width="300"/>
+
+
+https://www.youtube.com/watch?v=IoX4Ds7QQjE&list=PLe-u_DjFx7eui8dmPGji-0-slT8KydYv_&index=28
 
 For my starter project, I built a mini arcade console, which involved soldering circuit components, screwing the case together, and carefully following a step-by-step instruction manual. The kit included a screen, circuit board, buttons, joystick, wires, and a power module. To stay safe, I wore safety glasses while soldering and made sure to work in a well-ventilated area. One of the challenges I faced was making sure all the solder joints were secure without creating shorts, especially in tight spaces on the board. Another tricky part was connecting the screen and fitting all the wires neatly into the case. Through this project, I learned how to read technical diagrams, use a soldering iron properly, and troubleshoot basic electronic issues. It was a fun and educational experience that gave me confidence working with hardware.
 
