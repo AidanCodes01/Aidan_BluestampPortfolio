@@ -85,9 +85,7 @@ Don't forget to place the link of where to buy each component inside the quotati
 # Starter Project
 
 <img src="IMG_1948.jpg" alt="Headstone Image" width="300"/>
-
-
-https://www.youtube.com/watch?v=IoX4Ds7QQjE&list=PLe-u_DjFx7eui8dmPGji-0-slT8KydYv_&index=28
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IoX4Ds7QQjE?si=da1NLM3mqAhUFf_3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For my starter project, I built a mini arcade console, which involved soldering circuit components, screwing the case together, and carefully following a step-by-step instruction manual. The kit included a screen, circuit board, buttons, joystick, wires, and a power module. To stay safe, I wore safety glasses while soldering and made sure to work in a well-ventilated area. One of the challenges I faced was making sure all the solder joints were secure without creating shorts, especially in tight spaces on the board. Another tricky part was connecting the screen and fitting all the wires neatly into the case. Through this project, I learned how to read technical diagrams, use a soldering iron properly, and troubleshoot basic electronic issues. It was a fun and educational experience that gave me confidence working with hardware.
 
