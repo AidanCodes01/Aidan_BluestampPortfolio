@@ -71,6 +71,10 @@ For the first milestone of my project, my primary objective was to set up the Ra
 
 One of the main challenges I faced during this milestone was setting up the Raspberry Pi. Initially, I ran into an issue with the password length. Some passwords were being rejected, so I had to do some research to figure out the acceptable range, which turned out to be between 6 and 10 characters. After adjusting the password, I still experienced difficulties connecting the Pi to the internet. Eventually, we discovered that the real issue was with the Wi-Fi connection itself. After switching to a new router, the Raspberry Pi connected successfully, and the setup process continued smoothly from there.
 
+## Next Steps
+
+For the next steps, I plan to connect the motors to the motor driver board and write code to test and control their movement. I also want to try recording a video using the Raspberry Pi Camera Module to expand the robot’s vision capabilities. Additionally, I will continue building the robot by adding batteries and focusing more on the electrical aspects to ensure everything is properly powered and connected. These steps will help move the project closer to a fully functional prototype.
+
 # Schematics 
 Here's where you'll put images of your schematics. [Tinkercad](https://www.tinkercad.com/blog/official-guide-to-tinkercad-circuits) and [Fritzing](https://fritzing.org/learning/) are both great resoruces to create professional schematic diagrams, though BSE recommends Tinkercad becuase it can be done easily and for free in the browser. 
 
