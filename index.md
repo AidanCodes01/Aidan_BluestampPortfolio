@@ -43,15 +43,33 @@ For your second milestone, explain what you've worked on since your previous mil
 
 # First Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/CaCazFBhYKs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FBBSc86JjYk?si=o0xMJnHEnhdpoR2X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-For your first milestone, describe what your project is and how you plan to build it. You can include:
-- An explanation about the different components of your project and how they will all integrate together
-- Technical progress you've made so far
-- Challenges you're facing and solving in your future milestones
-- What your plan is to complete your project
+## Summary
+
+For the first milestone of my project, my primary objective was to set up the Raspberry Pi and get the Raspberry Pi Camera Module working correctly. I started by flashing the Raspberry Pi OS onto a microSD card using the Raspberry Pi Imager and then booted up the Pi for initial setup and configuration. After enabling camera support in the settings and installing the necessary libraries, I connected the camera module and tested it by writing a Python script that successfully captured and saved a photo. This confirmed that the camera hardware and software were working together properly. Alongside the software setup, I also began assembling the initial prototype of my robot. This included organizing the basic components, connecting them to the Pi, and testing how the camera would integrate into the robot’s future functionality. This milestone marked a strong start to the project, laying the foundation for more complex development in later phases.
+
+### Components Used
+
+- Raspberry Pi minicomputer
+    - The component that provides the main function of the project. The Raspberry Pi is essentially a minicomputer that you can write code onto, and ultimately power the robot through wiring.
+- Raspberry Pi Camera Module
+    - The camera is used for live capture.
+- HDMI to micro HDMI cable
+    - Used to display Pi contents on monitor.
+- SD card reader
+    - Necessary to flash your microSD and install an OS onto it.
+- Wireless Mouse and Keyboard
+    - A separate Mouse and Keyboard is needed to operate the Raspberry Pi.
+- Powerbank
+    - Compact and portable external power supply with USB-C for Raspberry Pi.
+- Video Capture Card
+    - Capture card is necessary to display onto laptops (unnecessary for separate monitors).
+
+## Challenges
+
+One of the main challenges I faced during this milestone was setting up the Raspberry Pi. Initially, I ran into an issue with the password length. Some passwords were being rejected, so I had to do some research to figure out the acceptable range, which turned out to be between 6 and 10 characters. After adjusting the password, I still experienced difficulties connecting the Pi to the internet. Eventually, we discovered that the real issue was with the Wi-Fi connection itself. After switching to a new router, the Raspberry Pi connected successfully, and the setup process continued smoothly from there.
 
 # Schematics 
 Here's where you'll put images of your schematics. [Tinkercad](https://www.tinkercad.com/blog/official-guide-to-tinkercad-circuits) and [Fritzing](https://fritzing.org/learning/) are both great resoruces to create professional schematic diagrams, though BSE recommends Tinkercad becuase it can be done easily and for free in the browser. 
