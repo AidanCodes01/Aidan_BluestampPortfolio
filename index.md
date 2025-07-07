@@ -7,7 +7,7 @@ Replace this text with a brief description (2-3 sentences) of your project. This
 |:--:|:--:|:--:|:--:|
 | Aidan D | Homestead High School | Electrical Engineering | Incoming Sophmore
 
-
+<img src="AidanD.heic" alt="Headstone Image" width="300"/>
 
 
   
