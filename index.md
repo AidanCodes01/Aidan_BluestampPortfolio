@@ -22,21 +22,107 @@ For your final milestone, explain the outcome of your project. Key details to in
 - What your biggest challenges and triumphs were at BSE
 - A summary of key topics you learned about
 - What you hope to learn in the future after everything you've learned at BSE
-
+-->
 
 
 # Second Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
+## Summary 
+
+## Challenges 
+
+## Next Steps 
+
+## Code 
+
+### Basic Motor Testing 
+
+```python
+import RPi.GPIO as GPIO
+import cv2
+import numpy as np
+
+GPIO.setmode(GPIO.BCM)
+
+MOTOR1B = 0  # LEFT motor
+MOTOR1E = 5
+
+MOTOR2B = 13  # RIGHT motor
+MOTOR2E = 6
+
+GPIO.setup(MOTOR1B, GPIO.OUT)
+GPIO.setup(MOTOR1E, GPIO.OUT)
+
+GPIO.setup(MOTOR2B, GPIO.OUT)
+GPIO.setup(MOTOR2E, GPIO.OUT)
+
+while True:
+    userInput = input()
+
+    if userInput == 'w':
+        GPIO.output(MOTOR1B, GPIO.HIGH)
+        GPIO.output(MOTOR1E, GPIO.LOW)
+        GPIO.output(MOTOR2B, GPIO.HIGH)
+        GPIO.output(MOTOR2E, GPIO.LOW)
+
+    if userInput == 'a':
+        GPIO.output(MOTOR1B, GPIO.LOW)
+        GPIO.output(MOTOR1E, GPIO.LOW)
+        GPIO.output(MOTOR2B, GPIO.HIGH)
+        GPIO.output(MOTOR2E, GPIO.LOW)
+
+    if userInput == 's':
+        GPIO.output(MOTOR1B, GPIO.LOW)
+        GPIO.output(MOTOR1E, GPIO.HIGH)
+        GPIO.output(MOTOR2B, GPIO.LOW)
+        GPIO.output(MOTOR2E, GPIO.HIGH)
+
+    if userInput == 'd':
+        GPIO.output(MOTOR1B, GPIO.HIGH)
+        GPIO.output(MOTOR1E, GPIO.LOW)
+        GPIO.output(MOTOR2B, GPIO.LOW)
+        GPIO.output(MOTOR2E, GPIO.LOW)
+
+    if userInput == 'x':
+        GPIO.output(MOTOR1B, GPIO.LOW)
+        GPIO.output(MOTOR1E, GPIO.LOW)
+        GPIO.output(MOTOR2B, GPIO.LOW)
+        GPIO.output(MOTOR2E, GPIO.LOW)
 
 
+```
+### Live Stream on the Camera Module
+
+```python
+from picamera2 import Picamera2, Preview
+import cv2
+
+# Initialize camera
+picam2 = Picamera2()
+picam2.configure(picam2.create_preview_configuration(main={"size": (640, 480)}))
+picam2.start()
+
+# Loop to show frames in a window
+while True:
+    frame = picam2.capture_array()
+    cv2.imshow("Live Camera Feed", frame)
+
+    # Break loop with 'q' key
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Cleanup
+picam2.close()
+cv2.destroyAllWindows()
+
+```
 
 For your second milestone, explain what you've worked on since your previous milestone. You can highlight:
 - Technical details of what you've accomplished and how they contribute to the final goal
 - What has been surprising about the project so far
 - Previous challenges you faced that you overcame
 - What needs to be completed before your final milestone 
--->
+
 # First Milestone
 
 
