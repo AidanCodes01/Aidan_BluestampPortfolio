@@ -29,14 +29,96 @@ For your final milestone, explain the outcome of your project. Key details to in
 
 ## Summary 
 
+My second milestone started off with checking my motors and recording a live stream with the camera module. Then i worked on the ball tracking robot code. 
 ## Challenges 
 
 ## Next Steps 
 
 ## Code 
 
-### Basic Motor Testing 
+### Ball Tracking Code
+```python
+import time                       # Import time module to get current timestamp
+import cv2                        # Import OpenCV for image processing and GUI
+import numpy as np               # Import NumPy for numerical operations and array handling
+from picamera2 import Picamera2  # Import Picamera2 to interface with the Raspberry Pi camera
 
+# Initialize Picamera2
+picamera = Picamera2()  # Create a Picamera2 object
+picamera.configure(picamera.create_preview_configuration(main={"size": (640, 480)}))  # Configure the camera preview at 640x480 resolution
+picamera.start()  # Start the camera
+
+def detect_mask(frame):
+        # Convert frame to HSV color space
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  # Convert the input frame from BGR to HSV color space
+
+    # Define lower and upper bounds for red color detection in HSV
+    lower_red = np.array([150, 140, 1])  # Lower HSV range for red
+    upper_red = np.array([190, 255, 255])  # Upper HSV range for red
+
+    # Threshold the HSV image to get only red colors
+    mask1 = cv2.inRange(hsv, lower_red, upper_red)  # Create mask1 for red in lower hue range
+   
+    lower_red = np.array([170, 120, 120])  # Lower HSV range for red in upper hue wrap-around
+    upper_red = np.array([180, 255, 255])  # Upper HSV range for red in upper hue wrap-around
+    mask2 = cv2.inRange(hsv, lower_red, upper_red)  # Create mask2 for red in upper hue range
+    
+
+    mask = mask1 + mask2  # Combine both red masks to cover full red spectrum
+    # print(mask)
+    # Apply a series of erosions and dilations to reduce noise
+    mask = cv2.erode(mask, None, iterations=2)  # Erode the mask to remove small blobs
+    mask = cv2.dilate(mask, None, iterations=2)  # Dilate the mask to restore object size
+# Find contours in the mask
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find external contours in the mask
+
+    # Initialize center of the ball as None
+    center = None  # Set center to None (used later for tracking or reference)
+
+    # Proceed if at least one contour was found
+    if len(contours) > 0:  # Check if any contours were detected
+        # Find the largest contour (assuming it's the ball)
+        c = max(contours, key=cv2.contourArea)  # Select the contour with the largest area
+
+        # Compute the minimum enclosing circle and centroid
+        ((x, y), radius) = cv2.minEnclosingCircle(c)  # Get center and radius of the smallest circle enclosing the contour
+        M = cv2.moments(c)  # Compute image moments of the contour
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))  # Calculate the center (centroid) of the contour
+
+        # Only proceed if the radius meets a minimum size
+        if radius > 20:  # Only consider it a ball if the radius is larger than 20 pixels
+            # Draw the circle and centroid on the frame
+            cv2.circle(frame, (int(x), int(y)), int(radius), (255, 0, 0), 2)  # Draw a red circle around the detected ball
+            cv2.putText(frame, "Red Ball", (int(x - radius), int(y - radius)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)  # Label the red ball
+
+    return frame  # Return the frame with ball detection drawn
+
+
+
+
+try:
+    while True:  # Infinite loop to continuously capture and process frames
+        # Capture frame-by-frame
+        frame = picamera.capture_array()  # Capture the current frame from the camera
+
+        # Convert BGR to RGB
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert frame from BGR to RGB color space
+
+        mask2 = detect_mask(frame)
+
+        # Display the frame with detection
+        cv2.imshow('Frame', mask2)  # Show the processed frame in a window
+
+        # Exit if 'q' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # Check if the user pressed the 'q' key
+            break  # Exit the loop if 'q' is pressed
+
+finally:
+    cv2.destroyAllWindows()  # Close all OpenCV windows
+    picamera.stop()  # Stop the camera
+
+```
+### Basic Motor Testing 
 ```python
 import RPi.GPIO as GPIO
 import cv2
