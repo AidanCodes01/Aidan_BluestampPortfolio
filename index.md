@@ -9,12 +9,6 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 
 
 
-  
-# Third Milestone
-
-
-
-
 # Second Milestone
 
 ## Summary 
@@ -44,7 +38,7 @@ Another part of this next step is syncing all the components smoothly. I’ll ne
 
 ## Schematics 
 
-
+<img src="schematic.png" alt="Schematic" width="300"/>
 
 ## Code 
 
