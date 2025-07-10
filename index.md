@@ -38,7 +38,7 @@ Another part of this next step is syncing all the components smoothly. I’ll ne
 
 ## Schematics 
 
-<img src="realschematic.png" alt="Schematic" width="400"/>
+<img src="realschematic.png" alt="Schematic" width="500"/>
 
 ## Code 
 
