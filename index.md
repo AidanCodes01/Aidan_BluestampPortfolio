@@ -36,15 +36,6 @@ After the camera and motor systems were tested, I moved on to the most challengi
 
 Once I had a clean mask, I used contour detection to locate red objects. The largest contour was assumed to be the ball. I used cv2.minEnclosingCircle() and cv2.moments() to find the center and size of the ball. If the radius of the detected circle was large enough (indicating that it wasn’t just noise), I drew a circle and label around the detected ball on the video frame.
 
-To turn this into a functioning robot, I then integrated the ball detection with my motor control code. The idea was to use the x-coordinate of the ball’s center to decide which direction the robot should move:
-
-- If the ball was on the left side of the frame (x < 200), the robot turned left.
-
-- If the ball was on the right side (x > 400), it turned right.
-
-- If the ball was centered (between 200 and 400), it moved forward.
-
-- If no ball was detected at all (None was returned), the robot spun in place, scanning its surroundings until the ball was found again.
   
 ## Challenges 
 
