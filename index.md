@@ -7,7 +7,6 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 |:--:|:--:|:--:|:--:|
 | Aidan D | Homestead High School | Electrical Engineering | Incoming Sophmore
 
-<img src="AidanD.heic" alt="Headstone Image" width="300"/>
 
 
   
@@ -29,10 +28,37 @@ For your final milestone, explain the outcome of your project. Key details to in
 
 ## Summary 
 
-My second milestone started off with checking my motors and recording a live stream with the camera module. Then i worked on the ball tracking robot code. 
+My second milestone began with testing and validating the functionality of the motors connected to my Raspberry Pi. I wired each motor to the motor driver board and used basic GPIO control in Python to ensure that each motor could spin forward, backward, or stop as needed. This step was crucial to make sure the robot's movement would be reliable when it came time to combine the motion with visual detection. I wrote a simple Python program that let me control the motors using keyboard inputs such as w, a, s, and d to move the robot forward, left, backward, and right. This gave me a hands on way to test how each motor responded to the GPIO signals.
+
+Next, I worked on setting up a live video stream using the Raspberry Pi Camera Module v3 and the picamera2 library. I configured the camera with a 640x480 resolution for efficient frame processing and used OpenCV (cv2) to display the video feed in real time. This live stream not only confirmed that the camera was functioning properly, but it also became the foundation for the robot's vision system.
+
+After the camera and motor systems were tested, I moved on to the most challenging and exciting part: coding the ball tracking logic. I began by writing a function to process each video frame and detect a red colored object (the ball) in the frame. Using OpenCV, I converted each frame from BGR to HSV color space, which is more effective for color based segmentation. I defined two HSV ranges to capture the full red spectrum, accounting for the way red wraps around in HSV values. I created a binary mask to highlight red pixels and applied erosion and dilation to remove noise and small artifacts.
+
+Once I had a clean mask, I used contour detection to locate red objects. The largest contour was assumed to be the ball. I used cv2.minEnclosingCircle() and cv2.moments() to find the center and size of the ball. If the radius of the detected circle was large enough (indicating that it wasn’t just noise), I drew a circle and label around the detected ball on the video frame.
+
+To turn this into a functioning robot, I then integrated the ball detection with my motor control code. The idea was to use the x-coordinate of the ball’s center to decide which direction the robot should move:
+
+- If the ball was on the left side of the frame (x < 200), the robot turned left.
+
+- If the ball was on the right side (x > 400), it turned right.
+
+- If the ball was centered (between 200 and 400), it moved forward.
+
+- If no ball was detected at all (None was returned), the robot spun in place, scanning its surroundings until the ball was found again.
+  
 ## Challenges 
 
+For my second milestone, I focused on testing and setting up the core hardware components of my Raspberry Pi robot. I began by wiring and programming the motors using GPIO pins and Python. I wrote a control script that let me move the robot in all directions using keyboard inputs, which helped confirm that the motors and H-bridge motor driver were working. A big part of this step was getting the wiring right—connecting the GPIO pins, H-bridge power, and ground lines on the breadboard. At one point, I accidentally connected my battery pack directly to the Pi’s 5V pin instead of the correct power rail, which caused the Raspberry Pi to fry and had to be replaced. I also had to troubleshoot reversed motor directions, which I fixed by swapping motor wires and adjusting the GPIO signals to control motor speed properly.
+
+Setting up the camera came with its own set of issues. Although the hardware was connected correctly, my Raspberry Pi wasn’t recognizing the camera at first. I found out that my SD card had permission errors that were preventing it from accessing certain system files needed to detect the camera. After trying several fixes, I ended up reflashing the SD card with a fresh Raspberry Pi OS image. That solved the issue, and I was then able to use the Picamera2 library with OpenCV to create a live video stream from the camera module. I configured the camera to output at a 640x480 resolution for smoother real-time processing.
+
+The biggest challenge in the ball tracking part was getting the mask to reliably detect the red ball. At first, the mask would pick up a lot of background noise or completely miss the ball, especially under certain lighting conditions. I adjusted the HSV color range several times and added erosion and dilation to clean up the mask. I also noticed that the ball detection would sometimes lag or miss frames, so I optimized the frame size and processing steps to make it faster. Once the ball was reliably detected, I used its x-coordinate to drive the motors, making the robot follow it depending on whether it appeared on the left, center, or right of the frame. Overall, this milestone involved solving real world hardware and software problems to build a working robot that sees and moves on its own.
+
 ## Next Steps 
+
+For my next steps, I plan to combine the motor control, camera, and ultrasonic (SR04) sensors into a single, fully integrated system. Right now, the robot can follow the ball using the camera, but I want to add obstacle detection using the SR04 sensors so it can avoid crashing into walls or objects while tracking. This means I’ll need to write code that allows the Raspberry Pi to read distance data from the sensors in real time and make smart decisions like stopping or turning if something gets in the way of the robot and the ball.
+
+Another part of this next step is syncing all the components smoothly. I’ll need to make sure the motors, camera, and sensors don’t conflict with each other in terms of GPIO pins, power, or timing. I also plan to test different movement strategies—for example, slowing down when objects are near or steering around obstacles while still keeping the ball in view. Once this is working, the robot will be much smarter and more capable of navigating real environments while staying focused on its goal: finding and following the red ball.
 
 ## Code 
 
