@@ -42,6 +42,10 @@ For my next steps, I plan to combine the motor control, camera, and ultrasonic (
 
 Another part of this next step is syncing all the components smoothly. I’ll need to make sure the motors, camera, and sensors don’t conflict with each other in terms of GPIO pins, power, or timing. I also plan to test different movement strategies—for example, slowing down when objects are near or steering around obstacles while still keeping the ball in view. Once this is working, the robot will be much smarter and more capable of navigating real environments while staying focused on its goal: finding and following the red ball.
 
+## Schematics 
+
+
+
 ## Code 
 
 ### Ball Tracking Code
