@@ -1,7 +1,7 @@
 # Ball Tracking Robot
 The ball-tracking robot uses a camera and computer vision to detect and follow a colored ball in real time. It processes video frames using software like OpenCV to identify the ball’s position and sends signals to the motors to move the robot toward it. This allows the robot to follow the ball smoothly as it moves around.
 
-
+<img src="AidanD.png" alt="Headstone Image" width="300"/>
 
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
