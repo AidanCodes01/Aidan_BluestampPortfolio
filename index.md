@@ -7,7 +7,177 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 |:--:|:--:|:--:|:--:|
 | Aidan D | Homestead High School | Electrical Engineering | Incoming Sophmore
 
+# Third Milestone
 
+## Summary
+
+For my third milestone, I focused on bringing together the motor control and ball detection into one full system. I started by writing functions in Python to control the motors, like moving forward, turning left or right, spinning in place, and stopping. I used PWM on the enable pins to control how fast the motors ran, which let me fine-tune the movement. After getting the motors to respond how I wanted, I worked on the ball detection using OpenCV. I set up a color mask in HSV to find the red ball in the camera feed, cleaned up the mask with erosion and dilation, and used contour detection to figure out where the ball was. If a ball was found, I calculated its center and radius, then marked it on the video frame. Once I had both systems working on their own, I combined them into a single loop so the robot could follow the ball live. If the ball was on the left or right side of the screen, the robot would turn in that direction, and if it was in the center, it would move forward. If the ball disappeared, the robot would spin in the last direction it saw the ball before stopping to look for it again. This milestone was when everything started coming together. It felt good seeing the robot actually move and react on its own after all the setup and testing.
+
+## Challenges
+
+One challenge I ran into was with the spin in place function. At first, when the robot lost sight of the ball, it would spin too far and sometimes stall for a second before correcting itself. This made it overshoot the ball or look a bit jerky when trying to find it again. I fixed this by adding short controlled movements using time.sleep(0.3) to limit how long the robot would spin at a time, followed by stop_motors() and a quick time.sleep(0.2) pause. This gave the robot smoother, more controlled turns and helped it track the ball better without spinning out of control.
+
+## Next Steps 
+      
+For my next steps, I plan to add a double decker and use text to speech. Which makes the robot turn or go forward when I say commands .
+
+## Code
+
+### Ball Tracking Robot 
+```python
+import time
+import cv2
+import numpy as np
+import RPi.GPIO as GPIO
+from picamera2 import Picamera2
+
+GPIO.setmode(GPIO.BCM)
+
+speed = 45
+
+# Motor Pins
+MOTOR1B = 0   # LEFT motor backward
+MOTOR1E = 5   # LEFT motor enable (PWM)
+MOTOR2B = 13  # RIGHT motor backward
+MOTOR2E = 6   # RIGHT motor enable (PWM)
+
+# Enable pins
+ENB = 19  # LEFT motor enable (should match motor1)
+ENA = 12  # RIGHT motor enable (should match motor2)
+ 
+GPIO.setup(MOTOR1B, GPIO.OUT)
+GPIO.setup(MOTOR1E, GPIO.OUT)
+GPIO.setup(MOTOR2B, GPIO.OUT)
+GPIO.setup(MOTOR2E, GPIO.OUT)
+GPIO.setup(ENB, GPIO.OUT)
+GPIO.setup(ENA, GPIO.OUT)
+
+power_left = GPIO.PWM(ENB, 100)   # LEFT motor
+power_right = GPIO.PWM(ENA, 100)  # RIGHT motor
+
+power_left.start(0)
+power_right.start(0)
+
+def stop_motors():
+    GPIO.output(MOTOR1B, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.LOW)
+    power_left.ChangeDutyCycle(0)
+    power_right.ChangeDutyCycle(0)
+
+def move_forward():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(speed)
+    power_right.ChangeDutyCycle(speed)
+
+def move_right():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(speed+30)
+    power_right.ChangeDutyCycle(0)
+
+def move_left():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(0)
+    power_right.ChangeDutyCycle(speed)
+
+def spin_in_place():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E , GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.HIGH)
+    power_left.ChangeDutyCycle(speed-44)
+    power_right.ChangeDutyCycle(speed-44)
+
+
+# Initialize Camera
+picamera = Picamera2()
+picamera.configure(picamera.create_preview_configuration(main={"size": (640, 480)}))
+picamera.start()
+
+def detect_ball(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lower1 = np.array([150, 140, 1])
+    upper1 = np.array([190, 255, 255])
+    lower2 = np.array([170, 120, 120])
+    upper2 = np.array([180, 255, 255])
+
+    mask1 = cv2.inRange(hsv, lower1, upper1)
+    mask2 = cv2.inRange(hsv, lower2, upper2)
+    mask = mask1 + mask2
+
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    if len(contours) > 0:
+        c = max(contours, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+        M = cv2.moments(c)
+
+        if M["m00"] != 0 and radius > 20:
+            center_x = int(M["m10"] / M["m00"])
+            cv2.circle(frame, (int(x), int(y)), int(radius), (255, 0, 0), 2)
+            cv2.putText(frame, "Red Ball", (int(x - radius), int(y - radius)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            return center_x, frame
+
+    return None, frame
+
+last_seen = None  # Add this before the loop
+
+last_seen = None  # Add this before the loop
+
+try:
+    while True:
+        frame = picamera.capture_array()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        ball_x, frame = detect_ball(frame)
+
+        if ball_x is not None:
+            if ball_x < 200:
+                move_left()
+                last_seen = 'left'
+            elif ball_x > 500:
+                move_right()
+                last_seen = 'right'
+            else:
+                move_forward()
+                last_seen = 'center'
+        else:
+            if last_seen == 'left':
+                move_left()
+            elif last_seen == 'right':
+                move_right()
+            else:
+                spin_in_place()
+            time.sleep(0.3)  # Short controlled movement
+            stop_motors()
+            time.sleep(0.2)
+        
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+
+
+
+finally:
+    stop_motors()
+    GPIO.cleanup()
+    picamera.stop()
+    cv2.destroyAllWindows()
+
+```
 
 # Second Milestone
 
