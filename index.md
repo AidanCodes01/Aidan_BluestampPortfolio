@@ -9,6 +9,8 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 
 # Third Milestone
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Nb3JSSTByps?si=z8xCAnJAXS_gaf8U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Summary
 
 For my third milestone, I wrote a loop that constantly checked the camera feed and updated the robot’s movement based on the ball’s position. If the ball wasn’t in view, the robot would spin in the last direction it saw the ball, trying to find it again. At first, the robot’s spin function caused it to go past the ball or pause awkwardly, so I fixed that by adding a time.sleep(0.3) for short controlled spins, followed by a stop_motors() and a quick time.sleep(0.2) pause. This gave the robot smoother turns and helped it react better when tracking the ball. It was awesome to see it finally following the ball on its own based on the live x-coordinates from the camera.
