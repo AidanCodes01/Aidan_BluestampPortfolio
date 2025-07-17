@@ -6,6 +6,257 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
 | Aidan D | Homestead High School | Electrical Engineering | Incoming Sophmore
+# Fourth Milestone
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/L_OGvqvN8IQ?si=XOE8OytCBNLXU96s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Summary 
+
+## Challenges 
+
+## Next Steps
+
+## Code
+
+### Ball Tracking With Voice Commands % Last Seen Mechanic 
+
+```python
+import time
+import cv2
+import numpy as np
+import threading
+import speech_recognition as sr
+import RPi.GPIO as GPIO
+from picamera2 import Picamera2
+
+
+# --------------------- GPIO Setup ---------------------
+GPIO.setmode(GPIO.BCM)
+
+speed = 45  # default motor speed
+
+# Motor pins
+MOTOR1B = 13  # LEFT motor IN1
+MOTOR1E = 26  # LEFT motor IN2
+MOTOR2B = 5   # RIGHT motor IN1
+MOTOR2E = 6   # RIGHT motor IN2
+
+ENA = 19  # LEFT motor enable
+ENB = 12  # RIGHT motor enable
+
+GPIO.setup([MOTOR1B, MOTOR1E, MOTOR2B, MOTOR2E, ENA, ENB], GPIO.OUT)
+
+power_left = GPIO.PWM(ENB, 100)
+power_right = GPIO.PWM(ENA, 100)
+
+power_left.start(0)
+power_right.start(0)
+
+
+# --------------------- Motion Functions ---------------------
+def stop_motors():
+    GPIO.output(MOTOR1B, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.LOW)
+    power_left.ChangeDutyCycle(0)
+    power_right.ChangeDutyCycle(0)
+
+
+def move_forward():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(speed)
+    power_right.ChangeDutyCycle(speed)
+
+
+def move_right():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(speed + 30)
+    power_right.ChangeDutyCycle(0)
+
+
+def move_left():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.LOW)
+    power_left.ChangeDutyCycle(0)
+    power_right.ChangeDutyCycle(speed)
+
+
+def spin_in_place():
+    GPIO.output(MOTOR1B, GPIO.HIGH)
+    GPIO.output(MOTOR1E, GPIO.LOW)
+    GPIO.output(MOTOR2B, GPIO.HIGH)
+    GPIO.output(MOTOR2E, GPIO.HIGH)
+    power_left.ChangeDutyCycle(speed - 44)
+    power_right.ChangeDutyCycle(speed - 44)
+
+
+# --------------------- Camera Init ---------------------
+picamera = Picamera2()
+picamera.configure(picamera.create_preview_configuration(main={"size": (640, 480)}))
+picamera.start()
+
+
+# --------------------- Ball Detection ---------------------
+def detect_ball(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lower1 = np.array([150, 140, 1])
+    upper1 = np.array([190, 255, 255])
+    lower2 = np.array([170, 120, 120])
+    upper2 = np.array([180, 255, 255])
+
+    mask1 = cv2.inRange(hsv, lower1, upper1)
+    mask2 = cv2.inRange(hsv, lower2, upper2)
+    mask = mask1 + mask2
+
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    if len(contours) > 0:
+        c = max(contours, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+        M = cv2.moments(c)
+
+        if M["m00"] != 0 and radius > 20:
+            center_x = int(M["m10"] / M["m00"])
+            cv2.circle(frame, (int(x), int(y)), int(radius), (255, 0, 0), 2)
+            cv2.putText(frame, "Red Ball", (int(x - radius), int(y - radius)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            return center_x, frame
+
+    return None, frame
+
+
+# --------------------- Voice Command Listener ---------------------
+voice_command = None
+override_time = 3  # seconds to apply command
+
+
+def voice_command_listener():
+    global voice_command
+    recognizer = sr.Recognizer()
+    mic = sr.Microphone()  # If needed, specify device_index
+
+    with mic as source:
+        recognizer.adjust_for_ambient_noise(source)
+
+    while True:
+        with mic as source:
+            print("[Voice] Listening...")
+            try:
+                audio = recognizer.listen(source, timeout=5)
+                text = recognizer.recognize_google(audio).lower()
+                print(f"[Voice] Heard: {text}")
+
+                if "left" in text:
+                    voice_command = "left"
+                elif "right" in text:
+                    voice_command = "right"
+                elif "forward" in text or "straight" in text:
+                    voice_command = "forward"
+                elif "stop" in text:
+                    voice_command = "stop"
+
+                time.sleep(override_time)
+                voice_command = None
+
+            except sr.WaitTimeoutError:
+                pass
+            except sr.UnknownValueError:
+                print("[Voice] Didn't catch that.")
+            except sr.RequestError:
+                print("[Voice] Error reaching Google API.")
+
+
+# --------------------- Main Loop ---------------------
+last_seen = None
+
+# Start the voice listener thread
+listener_thread = threading.Thread(target=voice_command_listener, daemon=True)
+listener_thread.start()
+
+try:
+    while True:
+        frame = picamera.capture_array()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # PRIORITY: Voice command override
+        if voice_command:
+            print(f"[Override] Command: {voice_command}")
+            if voice_command == "left":
+                move_left()
+            elif voice_command == "right":
+                move_right()
+            elif voice_command == "forward":
+                move_forward()
+            elif voice_command == "stop":
+                stop_motors()
+
+        else:
+            # Ball tracking mode
+            ball_x, frame = detect_ball(frame)
+
+            if ball_x is not None:
+                if ball_x < 200:
+                    move_left()
+                    last_seen = 'left'
+                elif ball_x > 500:
+                    move_right()
+                    last_seen = 'right'
+                else:
+                    move_forward()
+                    last_seen = 'center'
+            else:
+                if last_seen == 'left':
+                    move_left()
+                elif last_seen == 'right':
+                    move_right()
+                else:
+                    spin_in_place()
+                time.sleep(0.3)
+                stop_motors()
+                time.sleep(0.2)
+
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+finally:
+    stop_motors()
+    GPIO.cleanup()
+    picamera.stop()
+    cv2.destroyAllWindows()
+
+```
+### Mic Test 
+
+```python
+import speech_recognition as sr
+
+recognizer = sr.Recognizer()
+
+with sr.Microphone() as source:
+    print("Say something...")
+    audio = recognizer.listen(source)
+
+try:
+    text = recognizer.recognize_google(audio)
+    print("You said:", text)
+except sr.UnknownValueError:
+    print("Sorry, I didn’t catch that.")
+except sr.RequestError:
+    print("Could not request results; check your internet.")
+
+```
 
 # Third Milestone
 
@@ -25,7 +276,8 @@ For my next steps, I plan to add a double decker and use text to speech. Which m
 
 ## Code
 
-### Ball Tracking Robot 
+### Ball Tracking Robot & Last Seen Mechani
+
 ```python
 import time
 import cv2
