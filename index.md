@@ -18,7 +18,7 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 
 ## Code
 
-### Ball Tracking With Voice Commands % Last Seen Mechanic 
+### Ball Tracking With Voice Commands
 
 ```python
 import time
