@@ -37,16 +37,16 @@ GPIO.setmode(GPIO.BCM)
 
 speed = 45
 
-# Motor Pins
-MOTOR1B = 0   # LEFT motor backward
-MOTOR1E = 5   # LEFT motor enable (PWM)
-MOTOR2B = 13  # RIGHT motor backward
-MOTOR2E = 6   # RIGHT motor enable (PWM)
+# Motor control pins
+MOTOR1B = 13  # LEFT motor IN1
+MOTOR1E = 26  # LEFT motor IN2
+MOTOR2B = 5 # RIGHT motor IN1
+MOTOR2E = 6  # RIGHT motor IN2
 
 # Enable pins
-ENB = 19  # LEFT motor enable (should match motor1)
-ENA = 12  # RIGHT motor enable (should match motor2)
- 
+ENA = 19  # LEFT motor enable (should match motor1)
+ENB = 12  # RIGHT motor enable (should match motor2)
+
 GPIO.setup(MOTOR1B, GPIO.OUT)
 GPIO.setup(MOTOR1E, GPIO.OUT)
 GPIO.setup(MOTOR2B, GPIO.OUT)
@@ -79,7 +79,7 @@ def move_right():
     GPIO.output(MOTOR1E, GPIO.LOW)
     GPIO.output(MOTOR2B, GPIO.HIGH)
     GPIO.output(MOTOR2E, GPIO.LOW)
-    power_left.ChangeDutyCycle(speed+30)
+    power_left.ChangeDutyCycle(speed + 30)
     power_right.ChangeDutyCycle(0)
 
 def move_left():
@@ -95,9 +95,8 @@ def spin_in_place():
     GPIO.output(MOTOR1E , GPIO.LOW)
     GPIO.output(MOTOR2B, GPIO.HIGH)
     GPIO.output(MOTOR2E, GPIO.HIGH)
-    power_left.ChangeDutyCycle(speed-44)
-    power_right.ChangeDutyCycle(speed-44)
-
+    power_left.ChangeDutyCycle(speed - 44)
+    power_right.ChangeDutyCycle(speed - 44)
 
 # Initialize Camera
 picamera = Picamera2()
@@ -129,14 +128,13 @@ def detect_ball(frame):
         if M["m00"] != 0 and radius > 20:
             center_x = int(M["m10"] / M["m00"])
             cv2.circle(frame, (int(x), int(y)), int(radius), (255, 0, 0), 2)
-            cv2.putText(frame, "Red Ball", (int(x - radius), int(y - radius)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            cv2.putText(frame, "Red Ball", (int(x - radius), int(y - radius)), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
             return center_x, frame
 
     return None, frame
 
-last_seen = None  # Add this before the loop
-
-last_seen = None  # Add this before the loop
+last_seen = None
 
 try:
     while True:
@@ -162,16 +160,13 @@ try:
                 move_right()
             else:
                 spin_in_place()
-            time.sleep(0.3)  # Short controlled movement
+            time.sleep(0.3)
             stop_motors()
             time.sleep(0.2)
-        
+
         cv2.imshow("Frame", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-
-
 
 finally:
     stop_motors()
