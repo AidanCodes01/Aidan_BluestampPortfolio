@@ -12,9 +12,15 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 
 ## Summary 
 
+For this milestone, I combined the ball tracking system with voice control, giving the robot two ways to respond. The camera would constantly check for the red ball, and based on its x-coordinate, the robot would turn left, right, or move forward. If the ball wasn’t visible, it would spin briefly in the last direction it saw the ball. At the same time, I added a voice command feature using speech recognition, which could override the ball tracking for a few seconds. When I said commands like "left," "right," "forward," or "stop," the robot would follow my voice instead of the ball before going back to tracking automatically. This setup made the robot feel a lot more interactive, like I could control it directly or let it chase the ball on its own.
+
 ## Challenges 
 
+I had a couple of challenges while working on this project. When I was wiring up the robot on my double decker setup, I ran into issues because I lost some of the motor documentation and pin references. This meant I had to spend extra time tracing wires and basically rewiring everything from scratch until it worked. On top of that, when I tested the voice control, the microphone sometimes didn’t pick up my commands clearly. I realized I needed to be a lot closer to the mic or speak louder for it to understand me, especially when there was background noise. Both of these slowed me down a bit, but after some trial and error, I got everything working.
+
 ## Next Steps
+
+For my next steps, I want to add ultrasonic sensors to the robot for object detection, so it can avoid obstacles while tracking the ball. This would make the robot smarter and help it move around without crashing into things. I also want to upgrade to a better microphone because the one I’m using now doesn’t always pick up my voice clearly, especially from a distance. 
 
 ## Code
 
@@ -264,7 +270,7 @@ except sr.RequestError:
 
 ## Summary
 
-For my third milestone, I wrote a loop that constantly checked the camera feed and updated the robot’s movement based on the ball’s position. If the ball wasn’t in view, the robot would spin in the last direction it saw the ball, trying to find it again. At first, the robot’s spin function caused it to go past the ball or pause awkwardly, so I fixed that by adding a time.sleep(0.3) for short controlled spins, followed by a stop_motors() and a quick time.sleep(0.2) pause. This gave the robot smoother turns and helped it react better when tracking the ball. It was awesome to see it finally following the ball on its own based on the live x-coordinates from the camera.
+For my third milestone, I wrote a loop that constantly checked the camera feed and updated the robot’s movement based on the ball’s position. If the ball wasn’t in view, the robot would spin in the last direction it saw the ball, trying to find it again. At first, the robot’s spin function caused it to go past the ball or pause awkwardly, so I fixed that by adding a time.sleep(0.3) for short controlled spins, followed by a stop_motors() and a quick time.sleep(0.2) pause. This gave the robot smoother turns and helped it react better when tracking the ball. 
 
 ## Challenges
 
