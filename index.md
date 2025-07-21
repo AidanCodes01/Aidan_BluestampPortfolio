@@ -5,7 +5,8 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
-| Aidan D | Homestead High School | Electrical Engineering | Incoming Sophmore
+| Aidan D | Homestead Hs | Electrical Engineering | Rising Sophmore
+
 # Fourth Milestone
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/L_OGvqvN8IQ?si=XOE8OytCBNLXU96s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
