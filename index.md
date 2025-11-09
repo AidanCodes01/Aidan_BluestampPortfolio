@@ -7,8 +7,104 @@ The ball-tracking robot uses a camera and computer vision to detect and follow a
 |:--:|:--:|:--:|:--:|
 | Aidan D | Homestead Hs | Electrical Engineering | Rising Sophmore
 
-# Fourth Milestone
+# Fifth Mileston 
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZxeRXdp8r6k" title="Aidan D. Modification 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Summary 
+
+For this milestone, I used the Google Maps API to create a program that gives directions from a starting point to a destination. I combined it with my microphone feature, allowing users to speak their start and end locations instead of typing them. Once the user gives both locations, the program processes the input and provides step-by-step directions. It tells you every turn and road you need to take to reach your destination efficiently.
+
+## Challenges 
+
+Another challenge I faced was handling errors when users gave unclear or incomplete locations. Sometimes the program would crash or give strange results if the input wasn’t specific enough. I solved this by adding checks that ask the user to repeat or clarify their input before continuing.
+
+## Next Steps
+
+For my next steps, I want to add ultrasonic sensors to the robot for object detection, so it can avoid obstacles while tracking the ball. This would make the robot smarter and help it move around without crashing into things. I also want to upgrade to a better microphone because the one I’m using now doesn’t always pick up my voice clearly, especially from a distance. 
+
+## Code
+
+### Google Maps Code
+
+```python
+import speech_recognition as sr
+import googlemaps
+import time
+import os
+
+# Text-to-Speech
+def speak(text):
+    print("[TTS]", text)
+    os.system(f'espeak "{text}"')
+
+# Voice to text
+def listen(prompt=""):
+    recognizer = sr.Recognizer()
+    mic = sr.Microphone()
+
+    with mic as source:
+        recognizer.adjust_for_ambient_noise(source)
+        speak(prompt)
+        print("[Listening] " + prompt)
+        audio = recognizer.listen(source)
+
+    try:
+        text = recognizer.recognize_google(audio)
+        print("[Heard]", text)
+        return text
+    except sr.UnknownValueError:
+        speak("Sorry, I didn't catch that.")
+        return None
+    except sr.RequestError:
+        speak("Google Speech Recognition is unavailable.")
+        return None
+
+# Directions using Google Maps
+def get_directions(start, end):
+    gmaps = googlemaps.Client(key="HERE") #Your specialized api key 
+
+    try:
+        directions = gmaps.directions(start, end, mode="walking")
+        if not directions:
+            speak("No route found.")
+            return
+
+        steps = directions[0]['legs'][0]['steps']
+        for step in steps:
+            instruction = step['html_instructions']
+            clean = strip_html(instruction)
+            speak(clean)
+            time.sleep(2)
+    except Exception as e:
+        print("[Error]", e)
+        speak("There was a problem getting directions.")
+
+# Strip HTML tags from instructions
+def strip_html(raw_html):
+    import re
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', raw_html)
+
+# === Main Program ===
+if __name__ == "__main__":
+    speak("Welcome. Let's get directions.")
+
+    start = None
+    while not start:
+        start = listen("Say your starting location.")
+
+    destination = None
+    while not destination:
+        destination = listen("Say your destination.")
+
+    speak(f"Getting directions from {start} to {destination}")
+    get_directions(start, destination)
+
+```
+
+# Fourth Milestone
+      
 <iframe width="560" height="315" src="https://www.youtube.com/embed/L_OGvqvN8IQ?si=XOE8OytCBNLXU96s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Summary 
